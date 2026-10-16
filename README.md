@@ -8,7 +8,7 @@
 
 SmoothKeys 是一个轻量的 macOS 菜单栏工具，把三个日常功能放在同一个应用中，减少后台工具、权限和更新的管理成本。
 
-当前版本 **0.3.2**，由个人日常使用版本整理而来，功能和设备兼容性仍在完善中。
+当前版本 **0.3.3**，由个人日常使用版本整理而来，功能和设备兼容性仍在完善中。
 
 [下载 App](https://github.com/outsider114/SmoothKeys/releases/latest)
 
@@ -103,9 +103,12 @@ DMG 和 `SHA256SUMS` 位于 `outputs/releases/v<版本号>/`。打包脚本只�
 outputs/SmoothKeys.app/Contents/MacOS/SmoothKeys --self-test
 ```
 
+滚动自检需要已登录的 macOS 桌面会话，不替代真实设备测试。参与开发见 [CONTRIBUTING.md](CONTRIBUTING.md)，安全问题请按 [SECURITY.md](SECURITY.md) 私下反馈。
+
 ## 使用说明
 
 - 不建议同时使用多个工具处理同一滚轮或键盘。
+- 键盘映射会替换所选设备当前的 HID 映射；关闭映射或正常退出时清空该映射，不会还原其他工具预先写入的规则。
 - Magic Mouse、特殊鼠标驱动，以及标识不完整的同型号键盘可能存在兼容性差异；更换 USB 端口后可能需要重新选择键盘。
 - 当前保留的应用产物为 Apple Silicon 版本；其他系统与架构的兼容性仍需验证。
 - 设置和少量滚轮诊断日志保存在本机，不记录键盘输入内容。当前没有联网更新或遥测。

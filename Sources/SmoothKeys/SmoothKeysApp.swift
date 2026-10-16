@@ -6,7 +6,12 @@ import SwiftUI
 struct SmoothKeysApp {
     static func main() {
         if CommandLine.arguments.contains("--self-test") {
-            exit(MouseScrollSelfTest.run() ? EXIT_SUCCESS : EXIT_FAILURE)
+            let keyboardPassed = KeyboardMappingSelfTest.run()
+            let mousePassed = MouseScrollSelfTest.run()
+            exit(keyboardPassed && mousePassed ? EXIT_SUCCESS : EXIT_FAILURE)
+        }
+        if CommandLine.arguments.contains("--self-test-keyboard") {
+            exit(KeyboardMappingSelfTest.run() ? EXIT_SUCCESS : EXIT_FAILURE)
         }
         if CommandLine.arguments.contains("--emit-test-scroll") {
             exit(MouseScrollSelfTest.emitScroll() ? EXIT_SUCCESS : EXIT_FAILURE)

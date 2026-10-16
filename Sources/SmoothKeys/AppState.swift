@@ -109,6 +109,11 @@ final class AppState: ObservableObject {
         }
     }
 
+    func refreshInputSources() {
+        inputController.reloadSources()
+        inputSources = inputController.sources
+    }
+
     func requestAccessibility() {
         _ = PermissionController.isAccessibilityTrusted(prompt: true)
         PermissionController.openAccessibilitySettings()

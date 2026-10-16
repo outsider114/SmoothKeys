@@ -57,6 +57,7 @@ final class KeyboardMappingController {
             guard let context else { return }
             let controller = Unmanaged<KeyboardMappingController>.fromOpaque(context).takeUnretainedValue()
             controller.refreshDevices()
+            controller.applyMappings()
         }, context)
 
         IOHIDManagerScheduleWithRunLoop(hidManager, CFRunLoopGetMain(), CFRunLoopMode.defaultMode.rawValue)
@@ -205,7 +206,7 @@ final class KeyboardMappingController {
         [kIOHIDKeyboardModifierMappingSrcKey: usage(0xE6), kIOHIDKeyboardModifierMappingDstKey: usage(0xE6)]
     ]
 
-    private static let pcModifierMapJSON = mappingJSON(pcModifierMap)
+    static let pcModifierMapJSON = mappingJSON(pcModifierMap)
     private static let emptyMappingJSON = mappingJSON([])
 
     private static func usage(_ keyUsage: UInt64) -> UInt64 {
@@ -231,7 +232,7 @@ final class KeyboardMappingController {
         return "v:\(vendorID)|p:\(productID)|\(discriminator)|t:\(transport)|n:\(name)"
     }
 
-    private static func matchingJSON(for device: KeyboardDevice) -> String? {
+    static func matchingJSON(for device: KeyboardDevice) -> String? {
         var matching: [String: Any] = [
             "VendorID": device.vendorID,
             "ProductID": device.productID,
@@ -239,6 +240,9 @@ final class KeyboardMappingController {
         ]
         if device.locationID != 0 {
             matching["LocationID"] = device.locationID
+        }
+        if !device.serialNumber.isEmpty {
+            matching["IOPropertyMatch"] = [kIOHIDSerialNumberKey: device.serialNumber]
         }
         if !device.transport.isEmpty {
             matching["Transport"] = device.transport

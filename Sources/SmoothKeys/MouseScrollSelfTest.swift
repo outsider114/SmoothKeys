@@ -62,8 +62,16 @@ enum MouseScrollSelfTest {
                 "display-link target dispatch startup",
                 failures: &failures
             )
-            RunLoop.current.run(until: Date().addingTimeInterval(0.15))
+            RunLoop.current.run(until: Date().addingTimeInterval(2))
+            check(!engine.isRunning, "display-link stops after idle", failures: &failures)
+            check(
+                engine.enqueue(event: dispatchEvent, y: 12, x: 0, speed: 1, transition: 0.1),
+                "display-link restarts after idle",
+                failures: &failures
+            )
+            check(engine.isRunning, "restarted display-link is running", failures: &failures)
             engine.stop()
+            check(!engine.isRunning, "display-link explicit stop", failures: &failures)
         }
 
         if failures.isEmpty {

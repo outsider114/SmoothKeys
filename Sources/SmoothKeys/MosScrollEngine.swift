@@ -28,6 +28,10 @@ final class MosScrollEngine {
     private var transition = 0.09
     private var postedFrames: UInt64 = 0
 
+    var isRunning: Bool {
+        displayLink.map { CVDisplayLinkIsRunning($0) } ?? false
+    }
+
     deinit {
         stop()
     }
@@ -163,11 +167,21 @@ final class MosScrollEngine {
         } else {
             shouldStop = true
         }
+        let idleGeneration = generation
         os_unfair_lock_unlock(&stateLock)
 
         if let snapshot { post(snapshot) }
-        if shouldStop, let displayLink, CVDisplayLinkIsRunning(displayLink) {
-            CVDisplayLinkStop(displayLink)
+        if shouldStop {
+            // Serialize lifecycle with enqueue; never stop a display link inside its callback.
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                os_unfair_lock_lock(&self.stateLock)
+                let stillIdle = self.eventTemplate == nil && self.generation == idleGeneration
+                os_unfair_lock_unlock(&self.stateLock)
+                if stillIdle, let displayLink = self.displayLink, CVDisplayLinkIsRunning(displayLink) {
+                    CVDisplayLinkStop(displayLink)
+                }
+            }
         }
     }
 

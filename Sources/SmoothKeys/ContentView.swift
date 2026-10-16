@@ -185,7 +185,7 @@ private struct InputMethodSettingsView: View {
             .pickerStyle(.menu)
 
             Button {
-                appState.refreshSystemState()
+                appState.refreshInputSources()
             } label: {
                 Label("刷新输入法列表", systemImage: "arrow.clockwise")
             }
