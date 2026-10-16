@@ -131,6 +131,13 @@ private struct MouseSettingsView: View {
             }
 
             PermissionNotice(appState: appState, reason: "鼠标平滑和翻转需要辅助功能权限。")
+
+            HStack(spacing: 4) {
+                Text("滚动核心改编自")
+                Link("Mos", destination: URL(string: "https://github.com/Caldis/Mos")!)
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
         }
     }
 
@@ -259,6 +266,7 @@ private struct KeyboardSettingsView: View {
 
 private struct SystemSettingsView: View {
     @ObservedObject var appState: AppState
+    @ViewState private var showingAbout = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -306,6 +314,15 @@ private struct SystemSettingsView: View {
                     .foregroundStyle(.secondary)
                     .textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Button {
+                showingAbout = true
+            } label: {
+                Label("关于与许可", systemImage: "info.circle")
+            }
+            .sheet(isPresented: $showingAbout) {
+                AboutView()
             }
 
             if !appState.accessibilityTrusted || !appState.inputMonitoringTrusted {

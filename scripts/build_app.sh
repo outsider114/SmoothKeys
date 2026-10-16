@@ -11,7 +11,9 @@ CONTENTS="$APP_DIR/Contents"
 cd "$ROOT"
 swift "$ROOT/scripts/generate_icons.swift"
 iconutil -c icns "$ROOT/Resources/SmoothKeys.iconset" -o "$ROOT/Resources/SmoothKeys.icns"
-swift build -c "$CONFIG"
+swift build -c "$CONFIG" \
+  -Xswiftc -debug-prefix-map -Xswiftc "$ROOT=." \
+  -Xswiftc -file-prefix-map -Xswiftc "$ROOT=."
 
 rm -rf "$APP_DIR"
 mkdir -p "$CONTENTS/MacOS" "$CONTENTS/Resources"
@@ -21,6 +23,10 @@ cp "$ROOT/Resources/SmoothKeys.icns" "$CONTENTS/Resources/SmoothKeys.icns"
 cp "$ROOT/Resources/Mos-LICENSE.txt" "$CONTENTS/Resources/Mos-LICENSE.txt"
 cp "$ROOT/LICENSE" "$CONTENTS/Resources/LICENSE"
 cp "$ROOT/THIRD_PARTY_NOTICES.md" "$CONTENTS/Resources/THIRD_PARTY_NOTICES.md"
+
+if [[ "$CONFIG" == "release" ]]; then
+  /usr/bin/strip -S "$CONTENTS/MacOS/$APP_NAME"
+fi
 
 /usr/bin/plutil -replace CFBundleExecutable -string "$APP_NAME" "$CONTENTS/Info.plist"
 /usr/bin/plutil -replace CFBundleVersion -string "$(date +%Y%m%d%H%M)" "$CONTENTS/Info.plist"
