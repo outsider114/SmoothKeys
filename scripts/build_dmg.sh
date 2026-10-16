@@ -15,7 +15,7 @@ mkdir -p "$DEST"
 WORK=$(mktemp -d "$DEST/.dmg-XXXXXX")
 MOUNT="$WORK/mount"
 cleanup() {
-  if mount | grep -Fq " on $MOUNT ("; then
+  if mount | grep -F " on $MOUNT (" >/dev/null; then
     hdiutil detach "$MOUNT" >/dev/null || return
   fi
   rm -rf "$WORK"
