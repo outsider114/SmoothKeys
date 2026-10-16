@@ -68,14 +68,16 @@ SmoothKeys 是一个轻量的 macOS 菜单栏工具，把三个日常功能放�
 
 ## 安装与权限
 
-1. 从 [Releases](https://github.com/outsider114/SmoothKeys/releases/latest) 下载 Apple Silicon 版本并解压，将 `SmoothKeys.app` 放到 `/Applications` 后启动。
+1. 从 [Releases](https://github.com/outsider114/SmoothKeys/releases/latest) 下载 Apple Silicon 版 `.dmg`，打开后将 `SmoothKeys.app` 拖入“应用程序”，再从“应用程序”启动。不要直接在磁盘映像中运行。
 2. 在“系统”页按提示授予辅助功能、输入监控权限。
 3. 按需开启鼠标增强、选择外接键盘和固定输入法。
 4. 需要开机运行时，开启“登录时自动启动”。
 
+<img src="docs/images/install.png" width="580" alt="DMG 安装窗口：将 SmoothKeys 拖入 Applications">
+
 若授权后仍未生效，请确认授权的是当前安装位置的应用，并重新启动。更换签名或使用其他位置的副本时，可能需要重新授权。
 
-下载包使用临时签名，尚未经过 Apple 公证；首次运行需按 macOS 提示允许打开。
+App 使用临时签名，尚未经过 Apple 公证；首次运行需按 macOS 提示允许打开。
 
 ## 从源码构建
 
@@ -86,6 +88,14 @@ bash scripts/build_app.sh
 ```
 
 产物位于 `outputs/SmoothKeys.app`，默认构建当前主机架构。可通过 `SMOOTHKEYS_SIGN_IDENTITY` 指定本机签名身份；未指定时，脚本优先使用本机 Apple Development 身份，否则使用临时签名。
+
+在 macOS 桌面会话中制作 DMG：
+
+```bash
+bash scripts/build_dmg.sh
+```
+
+DMG 和 `SHA256SUMS` 位于 `outputs/releases/v<版本号>/`。打包脚本只对分发副本使用临时签名，不改变本机安装版的签名。
 
 运行基本自检：
 
